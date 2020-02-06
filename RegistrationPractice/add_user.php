@@ -15,14 +15,14 @@ try{
 	echo "Should have connected\n";
 	
 
-	 $stmt = $db->prepare("INSERT INTO `Users2`
+	 $stmt = $db->prepare("INSERT INTO `Users`
                         (email) VALUES
-                        (:email)");
+                        (:email)
+			CHARACTER SET utf8 COLLATE utf8_general_ci"");
     
-        $params = array(":email"=> 'Bob@bob.com');
+        $params = array(":email"=> 'email1@email.com');
         $stmt->execute($params);
-        echo "<pre>" . var_export(
-                        $stmt->errorInfo(), true) . "</pre>";
+        
 	echo var_export($stmt->errorInfo(), true);
 }
 catch(Exception $e){
