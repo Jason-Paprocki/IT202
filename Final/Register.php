@@ -5,8 +5,7 @@
 	</head>
 
     <header>
-
-        <ul class= "navbar-nav center">
+        <ul class= "nav navbar-dark bg-dark rounded-lg center">
             <li class="nav-item">
                 <a class="nav-link" href="app/login.php">Class++ (Pilot)</a>
             </li>
@@ -32,7 +31,6 @@
                 <a class="nav-link" href="#officehours">Office Hours</a>
             </li>
         </ul>
-
     </header>
 
 
