@@ -5,7 +5,7 @@
 	</head>
 
     <header>
-        <ul class= "nav navbar-dark bg-dark rounded-lg">
+        <ul class= "nav navbar-dark bg-dark rounded-lg" style = "margin-left: 0px!important;">
             <li class="nav-item">
                 <a class="nav-link" href="app/login.php">Class++ (Pilot)</a>
             </li>
