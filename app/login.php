@@ -39,7 +39,7 @@
 </article>
 
 <section class="text-center">
-    <form method="POST">
+    <form method="POST" onsubmit="return verifyLogin()">
         <input type="email" id="email" name="email" placeholder="Email" />
         <br>
         <input type="password" id="password" name="password" placeholder="Password" />
@@ -69,7 +69,6 @@ if(isset($_POST['email']) && isset($_POST['password']) && !empty($_POST['passwor
         $params = array(":email"=> $email);
         $stmt->execute($params);
 		$result = $stmt->fetch(PDO::FETCH_ASSOC);
-		echo "<pre>" . var_export($stmt->errorInfo(), true) . "</pre>";
         if($result)
         {
 			$userpassword = $result['password'];
@@ -82,11 +81,11 @@ if(isset($_POST['email']) && isset($_POST['password']) && !empty($_POST['passwor
                 
 			}
 			else{
-				echo "Failed to login, invalid password";
+				echo "<script type='text/javascript'>alert('Invalid Password');</script>";
 			}
 		}
 		else{
-			echo "Invalid email";
+			echo "<script type='text/javascript'>alert('Invalid Email');</script>";
 		}
 	}
 	catch(Exception $e){

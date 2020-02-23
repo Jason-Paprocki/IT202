@@ -55,7 +55,6 @@
         echo "Thank you for registering";
     }
 
-
         if(array_key_exists('LogoutButton', $_POST)) 
         { 
             logout(); 
