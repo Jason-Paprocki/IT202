@@ -2,7 +2,7 @@
 // Collect The Square game
 
 // Get a reference to the canvas DOM element
-var canvas = document.getElementById('canvas');
+var canvas = document.getElementById("canvas");
 // Get the canvas drawing context
 var context = canvas.getContext('2d');
 
