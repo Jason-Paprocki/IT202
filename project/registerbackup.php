@@ -92,36 +92,25 @@ if(	   isset($_POST['email'])
 
 	//it's hashed
 	require("config.php");
-    $connection_string = "mysql:host=$dbhost;dbname=$dbdatabase;charset=utf8mb4";
-    
+	$connection_string = "mysql:host=$dbhost;dbname=$dbdatabase;charset=utf8mb4";
     try
     {
 		$db = new PDO($connection_string, $dbuser, $dbpass);
-        
-        $stmt = $db->prepare("INSERT INTO `AppUsers`
-                        (id, email, password, endtime, timeLeft) VALUES
-                        (:id, :email, :password,:endtime, :timeLeft)");
-        $params = array(":id" => $id,
-                        ":email"=> $email, 
-                        ":password"=> $pass,
-                        ":endtime" => $endTime,
-                        ":timeLeft"=>$timeLeft);
-        $stmt->execute($params);
-        
-        $initZero = NULL;
-        $stmt2 = $db->prepare("INSERT INTO `CreditCardInfo`
+		$stmt = $db->prepare("INSERT INTO `AppUsers`
+                        (id, email, password, timeLeft) VALUES
+                        (:id, :email, :password, :timeLeft)");
+        $stmt->execute();
+        $stmt = $db->prepare("INSERT INTO `CreditCardInfo`
                         (id, cardNum, expDate, CVV) VALUES
-                        (:id, NULL, NULL,NULL)");
-        $params2 = array(":id" => $id);
-        $stmt2->execute($params2);
-        
-        
+                        (:id, NULL, NULL, NULL)");
+        $stmt->execute();
+                
         session_start();
         $_SESSION["email"] = ":email";
         $_SESSION["redirect"] = ":register";
         $_SESSION["id"] = ":id";
 
-        //header("Location: account.php");
+        header("Location: account.php");
 	}
 	catch(Exception $e){
 		echo $e->getMessage();

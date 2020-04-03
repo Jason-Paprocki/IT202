@@ -88,7 +88,8 @@ if(isset($_POST['email']) && isset($_POST['password']) && !empty($_POST['passwor
 			echo "<script type='text/javascript'>alert('Invalid Email');</script>";
 		}
 	}
-	catch(Exception $e){
+    catch(Exception $e)
+    {
 		echo $e->getMessage();
 		exit();
 	}
