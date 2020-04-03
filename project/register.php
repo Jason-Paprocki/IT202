@@ -34,6 +34,9 @@
             <li class="nav-item">
 			    <a class="nav-link" href="download.php">Download</a>
 		    </li>
+            <li class="nav-item">
+			    <a class="nav-link" href="buy.php">Buy</a>
+		    </li>
         </div>
     </header>
 
@@ -107,21 +110,25 @@ if(	   isset($_POST['email'])
                         ":endtime" => $endTime,
                         ":timeLeft"=>$timeLeft);
         $stmt->execute($params);
-        
+    }
+	catch(Exception $e){
+		echo $e->getMessage();
+		exit();
+    }
+    try
+    {   
         $initZero = NULL;
         $stmt2 = $db->prepare("INSERT INTO `CreditCardInfo`
                         (id, cardNum, expDate, CVV) VALUES
                         (:id, NULL, NULL,NULL)");
         $params2 = array(":id" => $id);
         $stmt2->execute($params2);
-        
-        
+
         session_start();
         $_SESSION["email"] = ":email";
         $_SESSION["redirect"] = ":register";
-        $_SESSION["id"] = ":id";
-
-        //header("Location: account.php");
+        $_SESSION["id"] = "$id";
+        header("Location: account.php");
 	}
 	catch(Exception $e){
 		echo $e->getMessage();

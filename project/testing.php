@@ -39,17 +39,20 @@
     
 </html>
 <?php
-    session_start();
+    ini_set('display_errors',1);
+    ini_set('display_startup_errors', 1);
+    error_reporting(E_ALL);
+    session_start();    
     if (isset($_SESSION["email"]))
     {
-        ?>
+?>
         <section class = "text-center">
             <form method="post">
             <input type="submit" name="LogoutButton"
                 class="button" value="Logout" /> 
             </form>
         </section>
-        <?php
+<?php
     }
 
     if ($_SESSION["redirect"] == "login")
@@ -87,101 +90,53 @@
     } 
     if (isset($_SESSION["email"]))
     {
-        ?>
-            <div class="creditCardForm">
-                <div class="heading">
-                    <h1>Confirm Purchase</h1>
-                </div>
-                <div class="payment">
-                    <div class="form-group" id="card-number-field">
-                        <label for="cardNumber">Card Number</label>
-                        <input type="text" class="form-control" id="cardNumber">
-                    </div>
-                    <form method="POST" >
-                        <div class="form-group CVV">
-                            <label for="CVV">CVV</label>
-                            <input type="text" class="form-control" id="CVV">
-                        </div>
-                    
-                        <div class="form-group" id="expiration-date">
-                            <label>Expiration Date</label>
-                            <select>
-                                <option value="01">January</option>
-                                <option value="02">February </option>
-                                <option value="03">March</option>
-                                <option value="04">April</option>
-                                <option value="05">May</option>
-                                <option value="06">June</option>
-                                <option value="07">July</option>
-                                <option value="08">August</option>
-                                <option value="09">September</option>
-                                <option value="10">October</option>
-                                <option value="11">November</option>
-                                <option value="12">December</option>
-                            </select>
-                            <select>
-                                <option value="16"> 2016</option>
-                                <option value="17"> 2017</option>
-                                <option value="18"> 2018</option>
-                                <option value="19"> 2019</option>
-                                <option value="20"> 2020</option>
-                                <option value="21"> 2021</option>
-                            </select>
-                        </div>
-                    <div class="form-group" id="pay-now">
-                        <button type="submit" class="button" id="confirm-purchase">Confirm</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-        <?php
+?>
+<section class = "text-center">
+        <form name="regform" id="myForm" method="POST" onsubmit="return verifyPasswords(this)">
+            <input type="cardNumber" id="cardNumber" name="cardNumber" placeholder="cardNumber"/>
+            <br>
+            <input type="CVV" id="CVV" name="CVV" placeholder="CVV"/>
+            <br>
+            <input type="password" id="expiration-date" name="expiration-date" placeholder="expiration-date"/>
+            <br>
+            <input type="submit" value="Submit"/>
+        </form>
+    </section>
+     
+<?php
     }
-    //verify it
-    if(isset($_POST['cardNumber']) && isset($_POST['CVV']) && isset($_POST['expiration-date']) 
-    && !empty($_POST['cardNumber']) && !empty($_POST['CVV']) && !empty($_POST['expiration-date']))
+    //verify it  
+    if(isset($_POST['cardNumber']) && isset($_POST['CVV']) && isset($_POST['expiration-date']))
     {
-        $id = $_SESSION['id']
+        $id = $_SESSION['id'];
         $cardNumber = $_POST['cardNumber'];
         $CVV = $_POST['CVV'];
         $expDate = $_POST['expiration-date'];
         
         require("config.php");
-	    $connection_string = "mysql:host=$dbhost;dbname=$dbdatabase;charset=utf8mb4";
+        $connection_string = "mysql:host=$dbhost;dbname=$dbdatabase;charset=utf8mb4";
         try 
         {
+
 		    $db = new PDO($connection_string, $dbuser, $dbpass);
 		    $stmt = $db->prepare(
                 "UPDATE `CreditCardInfo`
                 SET cardNum = :cardNumber,
                 expDate = :expDate,
                 CVV = :CVV,
-                WHERE id = $id");
-            $stmt->bindValue(':cardNumber', $cardNumber);
-            $stmt->bindValue(':expDate', $expDate);
-            $stmt->bindValue(':CVV', $CVV);
-            $stmt->execute();
+                WHERE id = :id");
+            $params = array(
+                        ":id" => $id,   
+                        ":cardNumber" => $cardNumber,
+                        ":expDate" => $expDate,
+                        ":CVV" => $CVV);
+            $stmt->execute($params);
         }
         catch(Exception $e)
         {
             echo $e->getMessage();
             exit();
         }
-                		
+
     }
-    elseif (empty($_POST['CVV'])
-    {
-        echo "<script type='text/javascript'>alert('Invalid CVV');</script>";
-    }
-    elseif (empty($_POST['cardNumber'])
-    {
-        echo "<script type='text/javascript'>alert('Invalid cardNumber');</script>";
-    }
-    elseif (empty($_POST['expiration-date'])
-    {
-        echo "<script type='text/javascript'>alert('Invalid expiration-date');</script>";
-    }
-    else
-    {
-        echo "wow"
-    }           
 ?>

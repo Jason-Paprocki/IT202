@@ -21,6 +21,9 @@
             <li class="nav-item">
 			    <a class="nav-link" href="download.php">Download</a>
 		    </li>
+            <li class="nav-item">
+			    <a class="nav-link" href="buy.php">Buy</a>
+		    </li>
         </div>
     </header>
 
