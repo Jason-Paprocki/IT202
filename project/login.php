@@ -67,7 +67,7 @@ if(isset($_POST['email']) && isset($_POST['password']) && !empty($_POST['passwor
 	$connection_string = "mysql:host=$dbhost;dbname=$dbdatabase;charset=utf8mb4";
 	try {
 		$db = new PDO($connection_string, $dbuser, $dbpass);
-		$stmt = $db->prepare("SELECT email, password from `AppUsers` where email = :email LIMIT 1");
+		$stmt = $db->prepare("SELECT email, password, id from `AppUsers` where email = :email LIMIT 1");
 		
         $params = array(":email"=> $email);
         $stmt->execute($params);
@@ -75,11 +75,12 @@ if(isset($_POST['email']) && isset($_POST['password']) && !empty($_POST['passwor
         if($result)
         {
 			$userpassword = $result['password'];
-			
+			$id = $result['id'];
             if(password_verify($pass, $userpassword))
             {
                 $_SESSION["email"] = ":email";
                 $_SESSION["redirect"] = "login";
+                $_SESSION["id"] = $id;
                 header("Location: account.php");
                 
 			}

@@ -1,166 +1,72 @@
-<html>
-	<head>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-		<title>Jason Paprocki</title>
-	</head>
-
-    <header>
-        <div class="nav justify-content-md-center">
-            <li class="nav-item">
-			    <a class="nav-link" href="register.php">Register</a>
-		    </li>
-            <li class="nav-item">
-			    <a class="nav-link" href="login.php">Login</a>
-		    </li>
-            <li class="nav-item">
-			    <a class="nav-link" href="home.php">Home</a>
-		    </li>
-            <li class="nav-item">
-			    <a class="nav-link" href="account.php">Account</a>
-		    </li>
-            <li class="nav-item">
-			    <a class="nav-link" href="download.php">Download</a>
-		    </li>
-            <li class="nav-item">
-			    <a class="nav-link" href="buy.php">Buy</a>
-		    </li>
-        </div>
-    </header>
-
-
-    <section id = "space area">
-        <!--- Created space to center things-->
-        <br>
-    </section>
-
-    <article>
-        <header class = "text-center">
-        <h1>account</h1>
-        </header>
-    </article>
-
-    
-</html>
 <?php
     ini_set('display_errors',1);
     ini_set('display_startup_errors', 1);
     error_reporting(E_ALL);
-    session_start();    
+    session_start();
+
+    //top of the page
+    require "accountPlus/headers.html";
+    
+    
     if (isset($_SESSION["email"]))
     {
-?>
-        <section class = "text-center">
-            <form method="post">
-            <input type="submit" name="LogoutButton"
-                class="button" value="Logout" /> 
-            </form>
-        </section>
-<?php
+        //checks if the user has cookies set and then allows them to logout
+        require "accountPlus/logoutButton.php";
     }
 
+    
     if ($_SESSION["redirect"] == "login")
     {
         echo "Thank you for logging in";
     }
-    
-    if ($_SESSION["redirect"] == "register") 
+    elseif ($_SESSION["redirect"] == "register") 
     {
         echo "Thank you for registering";
     }
-
-    if(array_key_exists('LogoutButton', $_POST)) 
-    { 
-        logout(); 
-    }
-
-    function logout() 
-    { 
-        session_unset();
-        session_destroy();
-        echo "You have been logged out";
-        echo var_export($_SESSION, true);
-        //get session cookie and delete/clear it for this session
-        if (ini_get("session.use_cookies"))
-        { 
-            $params = session_get_cookie_params(); 
-            //clones then destroys since it makes it's lifetime 
-            //negative (in the past)
-            setcookie(session_name(), '', time() - 42000, 
-                $params["path"], $params["domain"], 
-                $params["secure"], $params["httponly"] 
-            ); 
-        } 
-    } 
-    if (isset($_SESSION["email"]))
+    else
     {
-?>
-<section class = "text-center">
-        <form name="regform" id="myForm" method="POST" onsubmit="return verifyPasswords(this)">
-            <input type="cardNumber" id="cardNumber" name="cardNumber" placeholder="cardNumber"/>
-            <br>
-            <input type="CVV" id="CVV" name="CVV" placeholder="CVV"/>
-            <br>
-            <input type="exp-month" id="expiration-month" name="expiration-month" placeholder="expiration-month"/>
-            <br>
-            <input type="exp-month" id="expiration-year" name="expiration-year" placeholder="expiration-year"/>
-            <br>
-            <input type="submit" value="Submit"/>
-        </form>
-    </section>
-     
-<?php
+        exit("Please Log in");
     }
-    //verify it  
-    if(isset($_POST['cardNumber']) && isset($_POST['CVV']) && isset($_POST['expiration-month']) && isset($_POST['expiration-year']))
+    require "accountPlus/changeEmail.php";
+    require "accountPlus/changePassword.php";
+    
+    try
     {
-        if(empty($_POST['expiration-year']) or (strlen($_POST['expiration-year']) != 4))
-        {
-            echo "<script type='text/javascript'>alert('Invalid Year');</script>";
-        }
-        if(empty($_POST['expiration-month']) or (strlen($_POST['expiration-month']) != 2))
-        {
-            echo "<script type='text/javascript'>alert('Invalid month');</script>";
-        }
-        if(empty($_POST['cardNumber']) or (strlen($_POST['cardNumber']) != 16))
-        {
-            echo "<script type='text/javascript'>alert('Invalid cardNumber');</script>";
-        }
-        if(empty($_POST['CVV']) or (strlen($_POST['CVV']) != 16))
-        {
-            echo "<script type='text/javascript'>alert('Invalid CVV');</script>";
-        }
-
+        require "db_connection.php";
         $id = $_SESSION['id'];
-        $cardNumber = $_POST['cardNumber'];
-        $CVV = $_POST['CVV'];
-        $expDate = $_POST['expiration-month'] . '-' . $_POST['expiration-year'];
-        
-        require("config.php");
-        $connection_string = "mysql:host=$dbhost;dbname=$dbdatabase;charset=utf8mb4";
-        try 
+        //checks if there is already a card
+        $stmt = $db->prepare(
+            "SELECT cardNum 
+            from `CreditCardInfo` 
+            where id = :id LIMIT 1");
+        $params = array(":id"=> $id);
+        $stmt->execute($params);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        $cardNum = $result["cardNum"];
+    }
+    
+    catch(Exception $e)
+    {
+		echo $e->getMessage();
+		exit();
+    }
+    
+    if ($cardNum == NULL)
+    {
+        if (isset($_SESSION["email"]))
         {
-
-		    $db = new PDO($connection_string, $dbuser, $dbpass);
-		    $stmt = $db->prepare(
-                "UPDATE `CreditCardInfo`
-                SET cardNum = :cardNumber,
-                expDate = :expDate,
-                CVV = :CVV
-                WHERE id = :id");
-            $params = array(
-                        ":id" => $id,   
-                        ":cardNumber" => $cardNumber,
-                        ":expDate" => $expDate,
-                        ":CVV" => $CVV);
-            $stmt->execute($params);
+            require "accountPlus/createCreditCard.php";
         }
-        catch(Exception $e)
+        else
         {
-            echo $e->getMessage();
-            exit();
+            echo "You must log in first";
         }
     }
+    else 
+    {
+        require "accountPlus/showOrResetCreditCard.php";
+    }
 
-
-
+    //show token
+    require "accountPlus/showToken.php";
 ?>
