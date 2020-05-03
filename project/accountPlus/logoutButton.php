@@ -15,8 +15,8 @@
     { 
         session_unset();
         session_destroy();
-        echo "You have been logged out";
-        echo var_export($_SESSION, true);
+        echo " <section class = 'text-center'> <h2> You have been logged out </h2> </section> ";
+        //echo var_export($_SESSION, true);
         //get session cookie and delete/clear it for this session
         if (ini_get("session.use_cookies"))
         { 

@@ -40,6 +40,6 @@
     </article>
 
     <section class = "text-center">
-        
+        <img src="homePicture.png" alt="home" width="976" height="549">
     </section>
 </html>

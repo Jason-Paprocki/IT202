@@ -1,7 +1,7 @@
 <?php
-    ini_set('display_errors',1);
-    ini_set('display_startup_errors', 1);
-    error_reporting(E_ALL);
+    //ini_set('display_errors',1);
+    //ini_set('display_startup_errors', 1);
+    //error_reporting(E_ALL);
     session_start();
 
     //top of the page
@@ -17,15 +17,16 @@
     
     if ($_SESSION["redirect"] == "login")
     {
-        echo "Thank you for logging in";
+        echo " <section class = 'text-center'> <h2> Thank you for Logging in </h2> </section> ";
     }
     elseif ($_SESSION["redirect"] == "register") 
     {
-        echo "Thank you for registering";
+        echo " <section class = 'text-center'> <h2> Thank you for Registering </h2> </section> ";
     }
     else
     {
-        exit("Please Log in");
+        echo " <section class = 'text-center'> Please Log in</section> ";
+        exit();
     }
     require "accountPlus/changeEmail.php";
     require "accountPlus/changePassword.php";
@@ -59,7 +60,7 @@
         }
         else
         {
-            echo "You must log in first";
+            echo " <section class = 'text-center'> You must log in first</section> ";
         }
     }
     else 
@@ -69,4 +70,27 @@
 
     //show token
     require "accountPlus/showToken.php";
+    
+    try 
+    {
+        $stmt = $db->prepare("SELECT endDate from `AppUsers` where id = :id LIMIT 1");
+    
+        $params = array(":id"=> $id);
+        $stmt->execute($params);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+    catch(Exception $e)
+    {
+        echo $e->getMessage();
+        exit();
+    }
+    $timeDisplay = $result["endDate"];
+    if ( $timeDisplay != "1000-01-01")
+    {
+        echo " <section class = 'text-center'> This service is valid until $timeDisplay</section> ";
+    }
+    else
+    {
+        echo " <section class = 'text-center'> You have no valid time purchased</section> ";
+    }
 ?>

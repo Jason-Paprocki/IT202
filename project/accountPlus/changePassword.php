@@ -38,7 +38,7 @@
                             ":id" => $id,
                             ":pass" => $pass);
                 $stmt->execute($params);
-                echo "Password has been changed";
+                echo " <section class = 'text-center'> <h2> Password has been changed </h2> </section> ";
             }
             catch(Exception $e)
             {
@@ -48,7 +48,7 @@
         }
         else
         {
-            echo "Passwords Do not match";
+            echo " <section class = 'text-center'> <h2> Passwords Do not match </h2> </section> ";
             exit();
         }
     }

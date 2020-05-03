@@ -42,7 +42,7 @@
 </article>
 
 <section class="text-center">
-    <form method="POST" onsubmit="return verifyLogin()">
+    <form method="POST">
         <input type="email" id="email" name="email" placeholder="Email" />
         <br>
         <input type="password" id="password" name="password" placeholder="Password" />
@@ -54,9 +54,9 @@
 </html>
 
 <?php 
-ini_set('display_errors',1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+//ini_set('display_errors',1);
+//ini_set('display_startup_errors', 1);
+//ror_reporting(E_ALL);
 session_start();
 
 if(isset($_POST['email']) && isset($_POST['password']) && !empty($_POST['password'])){

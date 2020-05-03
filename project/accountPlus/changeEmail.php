@@ -36,7 +36,7 @@
                             ":id" => $id,
                             ":email" => $email);
                 $stmt->execute($params);
-                echo "email has been changed";
+                echo " <section class = 'text-center'> <h2> Email has been changed </h2> </section> ";
             }
             catch(Exception $e)
             {
@@ -46,7 +46,7 @@
         }
         else
         {
-            echo "Emails Do not match";
+            echo " <section class = 'text-center'> <h2> Emails Do not match </h2> </section> ";
             exit();
         }
     }

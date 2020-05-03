@@ -40,9 +40,9 @@
     </article>
 </html>
 <?php
-    ini_set('display_errors',1);
-    ini_set('display_startup_errors', 1);
-    error_reporting(E_ALL);
+    //ini_set('display_errors',1);
+    //ini_set('display_startup_errors', 1);
+    //error_reporting(E_ALL);
     session_start();
 
     //the user needs to be logged in to continue
@@ -91,7 +91,7 @@
                 <div class = "text-center">
                 $5 a month, how many months?
                 </div>
-                <input type="months" id="months" name="months" placeholder="months" />
+                <input type="number" id="months" name="months" placeholder="months" min="1" max="999999999999"/>
                 <br>
                 <input type="submit" value="Buy" />
             </form>
@@ -102,6 +102,29 @@
         {
             if(is_numeric($_POST['months']) && $_POST['months'] > 0)
             {
+                try
+                {
+                    //checks if there is already a card
+                    $stmt = $db->prepare(
+                        "SELECT cardNum 
+                        from `CreditCardInfo` 
+                        where id = :id");
+                    $params = array(":id"=> $id);
+                    $stmt->execute($params);
+                    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                    $cardNum = $result["cardNum"];
+                }
+                catch(Exception $e)
+                {
+                    echo $e->getMessage();
+                    exit();
+                }
+                if ($cardNum == NULL)
+                {
+                    echo " <section class = 'text-center'> No Credit Card Entered</section> ";
+                    exit();
+                }
+
                 require("config.php");
                 $connection_string = "mysql:host=$dbhost;dbname=$dbdatabase;charset=utf8mb4";
                 try
@@ -111,7 +134,6 @@
                     date_default_timezone_set("America/New_York");
                     $currentDate = date("Y-m-d");
                     $months = $_POST['months'];
-
 
                     //checks if there is already a date
                     $stmt = $db->prepare(
@@ -129,6 +151,7 @@
                         //if there is already date that is greater than today in the persons account than it will take the 
                         //date in the database and add time to that
                         $endDate = date("Y-m-d", strtotime($pastDate . ' + ' . $months . ' months'));
+                        
                         $stmt = $db->prepare(
                         "UPDATE `AppUsers`
                         SET endDate = :endDate
@@ -137,13 +160,13 @@
                                 ":id" => $id,
                                 ":endDate" => $endDate);
                         $stmt->execute($params);
-                        
                     }
                     else 
                     {
                         //this is for when the user has run out of time and has to bet time set from today
                         $endDate = (string) (date("Y-m-d", strtotime($currentDate . ' + ' . $months . ' months')));
-                         $stmt = $db->prepare(
+                        
+                        $stmt = $db->prepare(
                             "UPDATE `AppUsers`
                             SET endDate = :endDate
                             WHERE id = :id");
@@ -158,6 +181,7 @@
                     echo $e->getMessage();
                     exit();
                 }
+                echo " <section class = 'text-center'> Thank you for your purchase <br> This service is valid until $endDate</section> ";
             }
             else
             {

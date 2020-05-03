@@ -2,13 +2,13 @@
     <section class = "text-center">
         <h1>Credit Card Info</h1>
         <form name="regform" id="myForm" method="POST" onsubmit="return verifyPasswords(this)">
-            <input type="cardNumber" id="cardNumber" name="cardNumber" placeholder="xxxx-xxxx-xxxx-xxxx"/>
+            Enter the 16 digit Card Number: <input type="cardNumber" id="cardNumber" name="cardNumber" placeholder="xxxx xxxx xxxx xxxx"/>
             <br>
-            <input type="CVV" id="CVV" name="CVV" placeholder="xxxx"/>
+            Enter the CVV number: <input type="CVV" id="CVV" name="CVV" placeholder="xxx / xxxx"/>
             <br>
-            <input type="exp-month" id="expiration-month" name="expiration-month" placeholder="xx"/>
+            Enter the expiration month: <input type="exp-month" id="expiration-month" name="expiration-month" placeholder="xx"/>
             <br>
-            <input type="exp-month" id="expiration-year" name="expiration-year" placeholder="2xxx"/>
+            Enter the expiration year: <input type="exp-month" id="expiration-year" name="expiration-year" placeholder="20xx"/>
             <br>
             <input type="submit" value="Submit"/>
         </form>
@@ -16,6 +16,7 @@
 </html>
 
 <?php
+
     //verify it  
     if(isset($_POST['cardNumber']) && isset($_POST['CVV']) && isset($_POST['expiration-month']) && isset($_POST['expiration-year']))
     {
@@ -31,7 +32,7 @@
     {
         echo "<script type='text/javascript'>alert('Invalid cardNumber');</script>";
     }
-    else if(empty($_POST['CVV']) or (strlen($_POST['CVV']) != 4))
+    else if(empty($_POST['CVV']) or (strlen($_POST['CVV']) > 4))
     {
         echo "<script type='text/javascript'>alert('Invalid CVV');</script>";
     }
